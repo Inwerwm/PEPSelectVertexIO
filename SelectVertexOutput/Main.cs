@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -18,7 +19,7 @@ namespace SelectVertexOutput
         {
             get
             {
-                return "プラグイン名";
+                return "選択頂点の出力";
             }
         }
 
@@ -26,7 +27,7 @@ namespace SelectVertexOutput
         {
             get
             {
-                return "0.0";
+                return "1.0";
             }
         }
 
@@ -34,7 +35,7 @@ namespace SelectVertexOutput
         {
             get
             {
-                return "プラグイン説明";
+                return "選択頂点をテキストファイルに出力する";
             }
         }
 
@@ -43,7 +44,7 @@ namespace SelectVertexOutput
             get
             {
                 // boot時実行, プラグインメニューへの登録, メニュー登録名
-                return new PEPluginOption(false, true, "プラグイン名");
+                return new PEPluginOption(false, true, "選択頂点の出力");
             }
         }
 
@@ -51,7 +52,14 @@ namespace SelectVertexOutput
         {
             try
             {
-
+                using(var writer = new StreamWriter($"SelectedVertex_{DateTime.Now:yyyyMMddHHmmss}.txt", false))
+                {
+                    foreach (var i in args.Host.Connector.View.PmxView.GetSelectedVertexIndices())
+                    {
+                        writer.WriteLine(i);
+                    }
+                }
+                MessageBox.Show("完了");
             }
             catch (Exception ex)
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -18,7 +19,7 @@ namespace SelectVertexInput
         {
             get
             {
-                return "プラグイン名";
+                return "選択頂点の入力";
             }
         }
 
@@ -26,7 +27,7 @@ namespace SelectVertexInput
         {
             get
             {
-                return "0.0";
+                return "1.0";
             }
         }
 
@@ -34,7 +35,7 @@ namespace SelectVertexInput
         {
             get
             {
-                return "プラグイン説明";
+                return "選択頂点をテキストファイルから入力する";
             }
         }
 
@@ -43,7 +44,7 @@ namespace SelectVertexInput
             get
             {
                 // boot時実行, プラグインメニューへの登録, メニュー登録名
-                return new PEPluginOption(false, true, "プラグイン名");
+                return new PEPluginOption(false, true, "選択頂点の入力");
             }
         }
 
@@ -51,7 +52,15 @@ namespace SelectVertexInput
         {
             try
             {
-
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.Filter = "テキストファイル(*.txt)|*.txt|すべてのファイル(*.*)|*.*";
+                ofd.Title = "ファイルの選択";
+                ofd.RestoreDirectory = true;
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    args.Host.Connector.View.PmxView.SetSelectedVertexIndices(File.ReadLines(ofd.FileName).Select(str=>int.Parse(str)).ToArray());
+                    MessageBox.Show("完了");
+                }
             }
             catch (Exception ex)
             {
